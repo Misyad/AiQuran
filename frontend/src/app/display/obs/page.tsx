@@ -1,9 +1,10 @@
 ﻿"use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { getSurah, getAyah } from "@/lib/quran/data";
 
-export default function OBSPage() {
+function OBSContent() {
   const searchParams = useSearchParams();
   const surah = Number(searchParams.get("surah")) || 1;
   const ayah = Number(searchParams.get("ayah")) || 1;
@@ -17,12 +18,9 @@ export default function OBSPage() {
         <div className="h-full w-full flex flex-col items-center justify-center p-6" style={{
           background: "linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.8) 100%)",
         }}>
-          {/* Surah name + Ayah number */}
           <div className="text-white/60 text-sm mb-4">
             {surahInfo.name_translation} — Ayat {ayah} — Juz {verse.juz}
           </div>
-
-          {/* Arabic text */}
           <div
             className="text-4xl md:text-5xl text-white text-center leading-[2.2] max-w-4xl"
             dir="rtl"
@@ -30,13 +28,9 @@ export default function OBSPage() {
           >
             {verse.text_arabic}
           </div>
-
-          {/* Translation */}
           <div className="text-lg md:text-xl text-white/80 mt-6 text-center max-w-3xl leading-relaxed">
             {verse.translation_id}
           </div>
-
-          {/* Bottom overlay info */}
           <div className="absolute bottom-4 left-4 right-4 flex justify-between text-white/40 text-xs">
             <span>QLVRS — Quran Live Verse Recognition</span>
             <span dir="rtl">{surahInfo.name_arabic} :{ayah}</span>
@@ -48,5 +42,13 @@ export default function OBSPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function OBSPage() {
+  return (
+    <Suspense fallback={<div className="h-screen w-screen bg-black" />}>
+      <OBSContent />
+    </Suspense>
   );
 }

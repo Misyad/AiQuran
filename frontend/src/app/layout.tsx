@@ -1,16 +1,19 @@
-﻿import type { Metadata } from "next";
+﻿import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "QLVRS - Quran Live Verse Recognition System",
   description: "AI-Powered Real-Time Quran Verse Recognition & Mushaf Display",
   manifest: "/manifest.json",
-  themeColor: "#166534",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "QLVRS",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#166534",
 };
 
 export default function RootLayout({
