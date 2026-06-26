@@ -43,7 +43,9 @@ pipeline {
 
                     # Check frontend
                     for i in $(seq 1 20); do
-                        status=$(curl -so /dev/null -w "%{http_code}" http://127.0.0.1:3003 2>/dev/null || echo "000")
+                        set +e
+                        status=$(curl -so /dev/null -w "%{http_code}" http://127.0.0.1:3003 2>/dev/null)
+                        set -e
                         if [ "$status" = "200" ] || [ "$status" = "302" ]; then
                             echo "Frontend is healthy at $APP_URL (attempt $i)"
                             break
