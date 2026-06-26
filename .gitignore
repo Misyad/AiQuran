@@ -5,9 +5,6 @@ dev/
 .env.local
 .env
 
-# Quran data (large JSON, not needed in git)
-frontend/src/lib/quran/quran_id.json
-
 # Downloaded research files
 main.js
 runtime.js
