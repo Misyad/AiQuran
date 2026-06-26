@@ -55,16 +55,19 @@ pipeline {
                         sleep 5
                     done
 
-                    # Check backend via docker exec + python
+                    # Check backend via docker exec
                     echo "Checking backend..."
                     for i in $(seq 1 12); do
-                        if docker exec "$APP_NAME"-backend-1 python3 -c "
-import urllib.request,sys
+                        set +e
+                        echo "import urllib.request, sys
 try:
-    r=urllib.request.urlopen('http://localhost:8000/health',timeout=3)
-    sys.exit(0 if r.status==200 else 1)
-except: sys.exit(1)
-" >/dev/null 2>&1; then
+    r = urllib.request.urlopen('http://localhost:8000/health', timeout=3)
+    sys.exit(0 if r.status == 200 else 1)
+except:
+    sys.exit(1)" | docker exec -i "$APP_NAME"-backend-1 python3 >/dev/null 2>&1
+                        result=$?
+                        set -e
+                        if [ "$result" = "0" ]; then
                             echo "Backend healthy at $API_URL (attempt $i)"
                             exit 0
                         fi
