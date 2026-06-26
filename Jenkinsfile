@@ -59,12 +59,12 @@ pipeline {
                     echo "Checking backend..."
                     for i in $(seq 1 12); do
                         set +e
-                        echo "import urllib.request, sys
+                        docker exec "$APP_NAME"-backend-1 python3 -c "import urllib.request,sys
 try:
-    r = urllib.request.urlopen('http://localhost:8000/health', timeout=3)
-    sys.exit(0 if r.status == 200 else 1)
+    r=urllib.request.urlopen('http://localhost:8000/health',timeout=3)
+    sys.exit(0 if r.status==200 else 1)
 except:
-    sys.exit(1)" | docker exec -i "$APP_NAME"-backend-1 python3 >/dev/null 2>&1
+    sys.exit(1)" >/dev/null 2>&1
                         result=$?
                         set -e
                         if [ "$result" = "0" ]; then
