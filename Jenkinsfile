@@ -57,14 +57,10 @@ pipeline {
 
                     # Check backend via docker exec
                     echo "Checking backend..."
+                    docker cp scripts/health.py "$APP_NAME"-backend-1:/tmp/health.py
                     for i in $(seq 1 12); do
                         set +e
-                        docker exec "$APP_NAME"-backend-1 python3 -c "import urllib.request,sys
-try:
-    r=urllib.request.urlopen('http://localhost:8000/health',timeout=3)
-    sys.exit(0 if r.status==200 else 1)
-except:
-    sys.exit(1)" >/dev/null 2>&1
+                        docker exec "$APP_NAME"-backend-1 python3 /tmp/health.py >/dev/null 2>&1
                         result=$?
                         set -e
                         if [ "$result" = "0" ]; then
