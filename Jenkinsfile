@@ -43,7 +43,8 @@ pipeline {
 
                     # Check frontend
                     for i in $(seq 1 20); do
-                        if curl -so /dev/null -w "%{http_code}" http://127.0.0.1:3000 | grep -q "200\|302"; then
+                        status=$(curl -so /dev/null -w "%{http_code}" http://127.0.0.1:3000)
+                        if [ "$status" = "200" ] || [ "$status" = "302" ]; then
                             echo "Frontend is healthy at $APP_URL"
                             break
                         fi
@@ -56,7 +57,8 @@ pipeline {
 
                     # Check backend
                     for i in $(seq 1 10); do
-                        if curl -so /dev/null -w "%{http_code}" http://127.0.0.1:8000/health 2>/dev/null | grep -q "200"; then
+                        status=$(curl -so /dev/null -w "%{http_code}" http://127.0.0.1:8000/health 2>/dev/null)
+                        if [ "$status" = "200" ]; then
                             echo "Backend is healthy at $API_URL"
                             exit 0
                         fi
