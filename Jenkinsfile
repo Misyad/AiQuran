@@ -60,10 +60,16 @@ pipeline {
                     # Check backend
                     for i in $(seq 1 12); do
                         set +e
-                        docker exec "$APP_NAME"-backend-1 sh -c "curl -so /dev/null -w '%{http_code}' http://localhost:8000/health 2>/dev/null" 2>/dev/null | grep -q "200"
-                        result=$?
+                        result=$(docker exec "$APP_NAME"-backend-1 python3 -c "
+import urllib.request
+try:
+    r = urllib.request.urlopen('http://localhost:8000/health')
+    exit(0 if r.status == 200 else 1)
+except:
+    exit(1)
+" 2>/dev/null; echo $?)
                         set -e
-                        if [ "$result" -eq 0 ]; then
+                        if [ "$result" = "0" ]; then
                             echo "Backend is healthy at $API_URL (attempt $i)"
                             exit 0
                         fi
