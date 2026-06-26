@@ -14,6 +14,25 @@ pipeline {
             }
         }
 
+        stage('Prepare Quran Data') {
+            steps {
+                sh '''
+                    mkdir -p frontend/src/lib/quran
+                    if [ ! -f frontend/src/lib/quran/quran_id.json ]; then
+                        echo "Downloading Quran data..."
+                        curl -sL -o frontend/src/lib/quran/quran_id.json \
+                          "https://raw.githubusercontent.com/sutanlab/quran-api/master/data/quran.json?download=quran_id.json" \
+                          -H "Accept: application/json" 2>/dev/null || echo "Will try alternative download"
+                    fi
+                    if [ ! -f frontend/src/lib/quran/quran_id.json ]; then
+                        echo "ERROR: Quran data file not found!"
+                        exit 1
+                    fi
+                    echo "Quran data ready: $(wc -c < frontend/src/lib/quran/quran_id.json) bytes"
+                '''
+            }
+        }
+
         stage('Build and Deploy') {
             steps {
                 sh '''
