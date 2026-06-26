@@ -14,25 +14,6 @@ pipeline {
             }
         }
 
-        stage('Prepare Quran Data') {
-            steps {
-                sh '''
-                    mkdir -p frontend/src/lib/quran
-                    if [ ! -f frontend/src/lib/quran/quran_id.json ]; then
-                        echo "Downloading Quran data..."
-                        curl -sL -o frontend/src/lib/quran/quran_id.json \
-                          "https://raw.githubusercontent.com/sutanlab/quran-api/master/data/quran.json?download=quran_id.json" \
-                          -H "Accept: application/json" 2>/dev/null || echo "Will try alternative download"
-                    fi
-                    if [ ! -f frontend/src/lib/quran/quran_id.json ]; then
-                        echo "ERROR: Quran data file not found!"
-                        exit 1
-                    fi
-                    echo "Quran data ready: $(wc -c < frontend/src/lib/quran/quran_id.json) bytes"
-                '''
-            }
-        }
-
         stage('Build and Deploy') {
             steps {
                 sh '''
@@ -58,30 +39,30 @@ pipeline {
                 sh '''
                     set -e
                     echo "Waiting for services to start..."
-                    sleep 10
+                    sleep 30
 
                     # Check frontend
                     for i in $(seq 1 20); do
-                        status=$(curl -so /dev/null -w "%{http_code}" http://127.0.0.1:3003)
+                        status=$(curl -so /dev/null -w "%{http_code}" http://127.0.0.1:3003 2>/dev/null || echo "000")
                         if [ "$status" = "200" ] || [ "$status" = "302" ]; then
-                            echo "Frontend is healthy at $APP_URL"
+                            echo "Frontend is healthy at $APP_URL (attempt $i)"
                             break
                         fi
                         if [ "$i" -eq 20 ]; then
-                            echo "Frontend did not become healthy"
+                            echo "Frontend health check failed after 20 attempts"
                             exit 1
                         fi
                         sleep 5
                     done
 
                     # Check backend
-                    for i in $(seq 1 10); do
-                        status=$(curl -so /dev/null -w "%{http_code}" http://127.0.0.1:8000/health 2>/dev/null)
+                    for i in $(seq 1 12); do
+                        status=$(curl -so /dev/null -w "%{http_code}" http://127.0.0.1:8000/health 2>/dev/null || echo "000")
                         if [ "$status" = "200" ]; then
-                            echo "Backend is healthy at $API_URL"
+                            echo "Backend is healthy at $API_URL (attempt $i)"
                             exit 0
                         fi
-                        sleep 3
+                        sleep 5
                     done
                     echo "Backend health check failed"
                     exit 1
