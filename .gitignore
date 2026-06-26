@@ -4,11 +4,11 @@ dev/
 *.log
 .env.local
 .env
-frontend/.env.local
-frontend/.env
-frontend/node_modules/
-frontend/.next/
-D:\AI Quran\frontend\src\lib\quran\quran_id.json
+
+# Quran data (large JSON, not needed in git)
+frontend/src/lib/quran/quran_id.json
+
+# Downloaded research files
 main.js
 runtime.js
 scripts.js
