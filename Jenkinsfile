@@ -59,8 +59,11 @@ pipeline {
 
                     # Check backend
                     for i in $(seq 1 12); do
-                        status=$(curl -so /dev/null -w "%{http_code}" http://127.0.0.1:8000/health 2>/dev/null || echo "000")
-                        if [ "$status" = "200" ]; then
+                        set +e
+                        docker exec "$APP_NAME"-backend-1 sh -c "curl -so /dev/null -w '%{http_code}' http://localhost:8000/health 2>/dev/null" 2>/dev/null | grep -q "200"
+                        result=$?
+                        set -e
+                        if [ "$result" -eq 0 ]; then
                             echo "Backend is healthy at $API_URL (attempt $i)"
                             exit 0
                         fi
