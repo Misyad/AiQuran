@@ -1,0 +1,23 @@
+node_modules/
+.next/
+dev/
+*.log
+.env.local
+.env
+frontend/.env.local
+frontend/.env
+frontend/node_modules/
+frontend/.next/
+D:\AI Quran\frontend\src\lib\quran\quran_id.json
+main.js
+runtime.js
+scripts.js
+styles.css
+polyfills.js
+chunk*.js
+favicon.ico
+kemenag_sample.html
+page*.jpg
+khat2_sample.jpg
+test_body.json
+test_silence.wav
