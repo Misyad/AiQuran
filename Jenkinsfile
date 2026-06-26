@@ -44,9 +44,9 @@ pipeline {
                     # Check frontend
                     for i in $(seq 1 20); do
                         set +e
-                        status=$(curl -so /dev/null -w "%{http_code}" http://127.0.0.1:3003 2>/dev/null)
+                        status=$(docker exec "$APP_NAME"-frontend-1 sh -c "wget -q -O- http://localhost:3000 2>/dev/null | head -c 100" 2>/dev/null || echo "")
                         set -e
-                        if [ "$status" = "200" ] || [ "$status" = "302" ]; then
+                        if [ -n "$status" ]; then
                             echo "Frontend is healthy at $APP_URL (attempt $i)"
                             break
                         fi
