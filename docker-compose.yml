@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: infra/Dockerfile.ws
     ports:
-      - "3001:3001"
+      - "3001:3004"
     restart: unless-stopped
 
   backend:
@@ -65,4 +65,5 @@ services:
 
 volumes:
   pgdata:
+
 

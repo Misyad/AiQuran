@@ -50,6 +50,7 @@ wss.on("connection", (ws, req) => {
 });
 
 console.log("QLVRS WebSocket Server running on ws://localhost:" + PORT);
-console.log("Connect as: ws://localhost:3001/?role=controller (operator)");
-console.log("       or: ws://localhost:3001/?role=display (projector)");
+console.log("Connect as: ws://localhost:3004/?role=controller (operator)");
+console.log("       or: ws://localhost:3004/?role=display (projector)");
+
 

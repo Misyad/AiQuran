@@ -37,7 +37,7 @@ export default function AnswerDisplayPage() {
           setPage(v.page);
         }
         const s = getSurah(msg.surah);
-        setSurahName(s?.name_translation || '');
+        setSurahName(s?.name_transliteration || '');
         setQuery('');
         setMode('answer');
       }
@@ -96,3 +96,4 @@ export default function AnswerDisplayPage() {
     </div>
   );
 }
+

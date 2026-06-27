@@ -61,7 +61,8 @@ export function searchByTranslation(input: string, topK: number = 5): SearchResu
       translation_id: c.verse.translation_id,
       page: c.verse.page,
       juz: c.verse.juz,
-      surah_name: surah?.name_translation || "",
+      surah_name: surah?.name_transliteration || "",
     };
   });
 }
+
