@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useRef, useCallback, useState } from 'react';
 
@@ -8,6 +8,14 @@ export interface WSMessage {
   ayah?: number;
   page?: number;
   displayMode?: string;
+  query?: string;
+  keywords?: string[];
+  translation?: string;
+  surah_name?: string;
+  juz?: number;
+  score?: number;
+  team?: string;
+  timer?: number;
   transcription?: string;
   confidence?: number;
   timestamp?: number;
@@ -75,3 +83,5 @@ export function useWebSocket(role: 'controller' | 'display') {
 
   return { connected, clientCount, send, addListener };
 }
+
+

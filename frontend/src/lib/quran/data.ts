@@ -108,3 +108,27 @@ export function getSurah(surahId: number): SurahInfo | undefined {
 export function getPageByAyah(surahId: number, ayahNumber: number): number {
   return findPage(surahId, ayahNumber);
 }
+
+/**
+ * Search translations for keyword(s).
+ */
+export function searchTranslations(keywords: string): Verse[] {
+  const kw = keywords.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+  if (kw.length === 0) return [];
+
+  const scored = ALL_VERSES
+    .map(v => {
+      const trans = v.translation_id.toLowerCase();
+      const matchCount = kw.filter(k => trans.includes(k)).length;
+      return { verse: v, score: matchCount / kw.length };
+    })
+    .filter(s => s.score > 0)
+    .sort((a, b) => b.score - a.score);
+
+  const seen = new Set<number>();
+  return scored.filter(s => {
+    if (seen.has(s.verse.id)) return false;
+    seen.add(s.verse.id);
+    return true;
+  }).slice(0, 10).map(s => s.verse);
+}
