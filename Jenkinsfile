@@ -28,7 +28,7 @@ pipeline {
                         exit 1
                     fi
 
-                    docker rm -f "$APP_NAME"-frontend-1 "$APP_NAME"-backend-1 "$APP_NAME"-db-1 "$APP_NAME"-redis-1 >/dev/null 2>&1 || true
+                    docker rm -f "$APP_NAME"-frontend-1 "$APP_NAME"-backend-1 "$APP_NAME"-db-1 "$APP_NAME"-redis-1 "$APP_NAME"-ws-server-1 >/dev/null 2>&1 || true
                     $COMPOSE up -d --build --remove-orphans
                 '''
             }

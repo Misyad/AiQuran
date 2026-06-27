@@ -18,7 +18,7 @@ function getWSUrl(role: string): string {
   if (typeof window === 'undefined') return '';
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const hostname = window.location.hostname;
-  const port = '3001';
+  const port = '3004';
   return protocol + '//' + hostname + ':' + port + '/?role=' + role;
 }
 
