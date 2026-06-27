@@ -12,6 +12,15 @@ services:
       - OPENAI_BASE_URL=${OPENAI_BASE_URL:-}
     depends_on:
       - backend
+      - ws-server
+    restart: unless-stopped
+
+  ws-server:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.ws
+    ports:
+      - "3001:3001"
     restart: unless-stopped
 
   backend:
