@@ -49,7 +49,7 @@ pipeline {
 
                     # Check frontend - retry up to 30 times (every 5s = 150s total)
                     for i in $(seq 1 30); do
-                        status=$(curl -so /dev/null -w "%{http_code}" http://127.0.0.1:3003 2>/dev/null) || true
+                        status=$(docker exec aiquran-frontend-1 curl -so /dev/null -w "%{http_code}" http://localhost:3000 2>/dev/null) || true
                         if [ "$status" = "200" ] || [ "$status" = "302" ]; then
                             echo "Frontend is healthy at $APP_URL (attempt $i)"
                             break
@@ -64,14 +64,14 @@ pipeline {
 
                     # Check backend
                     for i in $(seq 1 10); do
-                        status=$(curl -so /dev/null -w "%{http_code}" http://127.0.0.1:8000/health 2>/dev/null)
+                        status=$(docker exec aiquran-backend-1 curl -so /dev/null -w "%{http_code}" http://localhost:8000/health 2>/dev/null) || true
                         if [ "$status" = "200" ]; then
                             echo "Backend is healthy at $API_URL"
                             exit 0
                         fi
                         sleep 3
                     done
-                    docker logs aiquran-backend 2>/dev/null | tail -20 || true
+                    docker logs aiquran-backend-1 2>/dev/null | tail -20 || true
                     echo "Backend health check failed"
                     exit 1
                 '''
