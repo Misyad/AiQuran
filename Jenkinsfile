@@ -42,18 +42,21 @@ pipeline {
                 sh '''
                     set -e
                     echo "Waiting for services to start..."
-                    sleep 30
+                    # Initial wait then loop with retries
+                    INITIAL_WAIT=15
+                    echo "Initial wait: ${INITIAL_WAIT}s"
+                    sleep $INITIAL_WAIT
 
-                    # Check frontend
-                    for i in $(seq 1 20); do
-                        status=$(curl -so /dev/null -w "%{http_code}" http://127.0.0.1:3000)
+                    # Check frontend - retry up to 30 times (every 5s = 150s total)
+                    for i in $(seq 1 30); do
+                        status=$(curl -so /dev/null -w "%{http_code}" http://127.0.0.1:3000 2>/dev/null)
                         if [ "$status" = "200" ] || [ "$status" = "302" ]; then
-                            echo "Frontend is healthy at $APP_URL"
+                            echo "Frontend is healthy at $APP_URL (attempt $i)"
                             break
                         fi
-                        if [ "$i" -eq 20 ]; then
-                            echo "Frontend did not become healthy"
-                            docker logs aiquran-frontend 2>/dev/null | tail -20 || true
+                        if [ "$i" -eq 30 ]; then
+                            echo "Frontend did not become healthy after 30 attempts"
+                            docker logs aiquran-frontend-1 2>/dev/null | tail -20 || true
                             exit 1
                         fi
                         sleep 5
