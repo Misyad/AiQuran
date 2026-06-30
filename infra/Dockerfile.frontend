@@ -1,5 +1,9 @@
 ﻿FROM node:20-alpine AS builder
 WORKDIR /app
+
+# Increase Node.js memory for large JSON builds
+ENV NODE_OPTIONS=--max-old-space-size=4096
+
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ .
