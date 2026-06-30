@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: infra/Dockerfile.ws
     ports:
-      - "3001:3004"
+      - "3007:3004"
     restart: unless-stopped
 
   backend:
