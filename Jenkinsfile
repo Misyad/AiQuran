@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         APP_NAME = "aiquran"
-        APP_URL = "http://127.0.0.1:3000"
+        APP_URL = "http://127.0.0.1:3003"
         API_URL = "http://127.0.0.1:8000"
     }
 
@@ -49,7 +49,7 @@ pipeline {
 
                     # Check frontend - retry up to 30 times (every 5s = 150s total)
                     for i in $(seq 1 30); do
-                        status=$(curl -so /dev/null -w "%{http_code}" http://127.0.0.1:3000 2>/dev/null) || true
+                        status=$(curl -so /dev/null -w "%{http_code}" http://127.0.0.1:3003 2>/dev/null) || true
                         if [ "$status" = "200" ] || [ "$status" = "302" ]; then
                             echo "Frontend is healthy at $APP_URL (attempt $i)"
                             break
