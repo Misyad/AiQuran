@@ -42,7 +42,7 @@ pipeline {
                 sh '''
                     set -e
                     echo "Waiting for services to start..."
-                    sleep 15
+                    sleep 30
 
                     # Check frontend
                     for i in $(seq 1 20); do
