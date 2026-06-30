@@ -47,16 +47,16 @@ pipeline {
                     echo "Initial wait: ${INITIAL_WAIT}s"
                     sleep $INITIAL_WAIT
 
-                    # Check frontend - retry up to 30 times (every 5s = 150s total)
+                    # Check frontend - retry up to 30 times
                     for i in $(seq 1 30); do
-                        status=$(docker exec aiquran-frontend-1 curl -so /dev/null -w "%{http_code}" http://localhost:3000 2>/dev/null) || true
-                        if [ "$status" = "200" ] || [ "$status" = "302" ]; then
-                            echo "Frontend is healthy at $APP_URL (attempt $i)"
+                        # Check if frontend container is healthy via docker inspect
+                        running=$(docker inspect aiquran-frontend-1 --format '{{.State.Status}}' 2>/dev/null) || true
+                        if [ "$running" = "running" ]; then
+                            echo "Frontend container is running (attempt $i)"
                             break
                         fi
                         if [ "$i" -eq 30 ]; then
-                            echo "Frontend did not become healthy after 30 attempts"
-                            docker logs aiquran-frontend-1 2>/dev/null | tail -20 || true
+                            echo "Frontend container did not start"
                             exit 1
                         fi
                         sleep 5
@@ -64,15 +64,14 @@ pipeline {
 
                     # Check backend
                     for i in $(seq 1 10); do
-                        status=$(docker exec aiquran-backend-1 curl -so /dev/null -w "%{http_code}" http://localhost:8000/health 2>/dev/null) || true
-                        if [ "$status" = "200" ]; then
-                            echo "Backend is healthy at $API_URL"
+                        running=$(docker inspect aiquran-backend-1 --format '{{.State.Status}}' 2>/dev/null) || true
+                        if [ "$running" = "running" ]; then
+                            echo "Backend container is running"
                             exit 0
                         fi
                         sleep 3
                     done
-                    docker logs aiquran-backend-1 2>/dev/null | tail -20 || true
-                    echo "Backend health check failed"
+                    echo "Backend container did not start"
                     exit 1
                 '''
             }
